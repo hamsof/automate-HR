@@ -5,20 +5,35 @@ const { chromium } = require("playwright");
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto("https://app.zenhr.com/en/users/sign_in");
+  console.log("🌍 Navigating to ZenHR login...");
+  await page.goto("https://app.zenhr.com/en/users/sign_in", { waitUntil: "domcontentloaded" });
 
-  await page.goto("https://app.zenhr.com/en/users/sign_in");
-  await page.getByRole("textbox", { name: "Email" }).click();
-  await page
-    .getByRole("textbox", { name: "Email" })
-    .fill("h.abdulmanan@rewaatech.com");
-  await page.getByRole("textbox", { name: "Password" }).click();
-  await page
-    .getByRole("textbox", { name: "Password" })
-    .fill("Iamstudentofpucit12;");
+  // ✅ Wait for Email field using getByRole
+  await page.getByRole("textbox", { name: "Email" }).waitFor();
+
+  console.log("🔑 Entering login credentials...");
+  await page.getByRole("textbox", { name: "Email" }).fill("h.abdulmanan@rewaatech.com");
+  await page.getByRole("textbox", { name: "Password" }).fill("Iamstudentofpucit12;");
+
+  console.log("🚀 Logging in...");
   await page.getByRole("button", { name: "Login" }).click();
+
+  // ✅ Wait for Clock-In button using getByRole
+  await page.getByRole("button", { name: "Clock-In" }).waitFor({ timeout: 30000 });
+
+  await page.waitForTimeout(15000);
+
+  console.log("⏰ Checking in...");
   await page.getByRole("button", { name: "Clock-In" }).click();
+  await page.getByRole("button", { name: "Clock-In" }).click();
+
+  await page.getByRole("button", { name: "Proceed" }).waitFor({ timeout: 30000 });
+  await page.getByRole('button', { name: 'Proceed' }).click();
+
+
+
   console.log("✅ Check-in completed!");
+  await page.waitForTimeout(1000);
 
   await browser.close();
 })();
