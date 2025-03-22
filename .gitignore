@@ -1,0 +1,10 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Playwright browsers (can be reinstalled)
+playwright/.cache/
+playwright/.browsers/
+
+# VS Code settings (optional)
+.vscode/
