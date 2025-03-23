@@ -8,4 +8,6 @@ playwright/.browsers/
 
 # VS Code settings (optional)
 .vscode/
-.zip
+
+lambda.zip
+playwright-zenhr.zip
