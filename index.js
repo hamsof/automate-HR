@@ -14,3 +14,12 @@ exports.handler = async (event) => {
     });
   });
 }
+(async () => {
+    try {
+      console.log("🔹 Running Check-In...");
+      await exports.handler({ type: "check-in" });
+      console.log("✅ Check-In Completed!");
+    } catch (error) {
+      console.error("❌ Error:", error);
+    }
+  })();

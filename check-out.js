@@ -1,7 +1,12 @@
-const { chromium } = require("playwright");
+const chromium = require("@sparticuz/chromium");
+const playwright = require("playwright-core");
 
 (async () => {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await playwright.chromium.launch({
+    headless: true,
+    executablePath: await chromium.executablePath(),
+    args: chromium.args,
+  });
   const context = await browser.newContext();
   const page = await context.newPage();
 
