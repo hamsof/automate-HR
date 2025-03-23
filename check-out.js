@@ -40,7 +40,6 @@ const { chromium } = require("playwright");
   await page.getByRole("button", { name: "Proceed" }).click();
 
   console.log("✅ Check-in completed!");
-  await page.waitForTimeout(1000);
 
   await browser.close();
 })();
