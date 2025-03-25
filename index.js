@@ -1,67 +1,95 @@
 const puppeteer = require("puppeteer-core");
 const chromium = require("@sparticuz/chromium-min");
 
+// test code locally
+// const browser = await puppeteer.launch({
+//     executablePath:
+//       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+//     headless: false,
+//     defaultViewport: {
+//       width: 1280,
+//       height: 720,
+//     },
+//     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+//   });
+
 async function checkIn() {
-  const browser = await chromium.launchChromium({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(
+      "https://zen-hr.s3.us-east-1.amazonaws.com/chromium-v122.0.0-pack.tar"
+    ),
+    headless: chromium.headless,
+  });
+  const page = await browser.newPage();
 
   console.log("🌍 Navigating to ZenHR login...");
   await page.goto("https://app.zenhr.com/en/users/sign_in", {
     waitUntil: "domcontentloaded",
   });
 
-  await page
-    .getByRole("textbox", { name: "Email" })
-    .fill("h.abdulmanan@rewaatech.com");
-  await page
-    .getByRole("textbox", { name: "Password" })
-    .fill("Iamstudentofpucit12;");
-  await page.getByRole("button", { name: "Login" }).click();
+  await page.waitForSelector("#user_login");
+  await page.type("#user_login", "h.abdulmanan@rewaatech.com");
+  await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+  await page.click('button[type="submit"]');
 
-  await page
-    .getByRole("button", { name: "Clock-In" })
-    .waitFor({ timeout: 30000 });
-  await page.waitForTimeout(15000);
-  await page.getByRole("button", { name: "Clock-In" }).click();
-  await page
-    .getByRole("button", { name: "Proceed" })
-    .waitFor({ timeout: 30000 });
-  await page.getByRole("button", { name: "Proceed" }).click();
+  await page.waitForSelector('button[name="action_type"]', { timeout: 30000 });
+  const buttons = await page.$$('button[name="action_type"]');
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  console.log("⏳ Waiting for 5 seconds...");
+  await delay(10000);
+  console.log("✅ Continuing...");
+  await buttons[0].click();
 
-  console.log("✅ Check-in completed!");
+  await delay(3000);
+  await page.waitForSelector('button[name="commit"]', { timeout: 30000 });
+  const buttonProceed = await page.$$('button[name="commit"]');
+  await buttonProceed[0].click();
+
+  await delay(3000);
+
+  console.log("✅ Check-Out completed!");
   await browser.close();
 
   return "Check-in completed!";
 }
 
 async function checkOut() {
-  const browser = await chromium.launchChromium({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath(
+      "https://zen-hr.s3.us-east-1.amazonaws.com/chromium-v122.0.0-pack.tar"
+    ),
+    headless: chromium.headless,
+  });
+  const page = await browser.newPage();
 
   console.log("🌍 Navigating to ZenHR login...");
   await page.goto("https://app.zenhr.com/en/users/sign_in", {
     waitUntil: "domcontentloaded",
   });
 
-  await page
-    .getByRole("textbox", { name: "Email" })
-    .fill("h.abdulmanan@rewaatech.com");
-  await page
-    .getByRole("textbox", { name: "Password" })
-    .fill("Iamstudentofpucit12;");
-  await page.getByRole("button", { name: "Login" }).click();
+  await page.waitForSelector("#user_login");
+  await page.type("#user_login", "h.abdulmanan@rewaatech.com");
+  await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+  await page.click('button[type="submit"]');
 
-  await page
-    .getByRole("button", { name: "Clock-In" })
-    .waitFor({ timeout: 30000 });
-  await page.waitForTimeout(15000);
-  await page.getByRole("button", { name: "Clock-Out" }).click();
-  await page
-    .getByRole("button", { name: "Proceed" })
-    .waitFor({ timeout: 30000 });
-  await page.getByRole("button", { name: "Proceed" }).click();
+  await page.waitForSelector('button[name="action_type"]', { timeout: 30000 });
+  const buttons = await page.$$('button[name="action_type"]');
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  console.log("⏳ Waiting for 5 seconds...");
+  await delay(10000);
+  console.log("✅ Continuing...");
+  await buttons[1].click();
+
+  await delay(3000);
+  await page.waitForSelector('button[name="commit"]', { timeout: 30000 });
+  const buttonProceed = await page.$$('button[name="commit"]');
+  await buttonProceed[0].click();
+
+  await delay(3000);
 
   console.log("✅ Check-Out completed!");
   await browser.close();
