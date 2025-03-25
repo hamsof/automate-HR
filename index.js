@@ -1,25 +1,85 @@
-const { exec } = require("child_process");
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium-min");
+
+async function checkIn() {
+  const browser = await chromium.launchChromium({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  console.log("🌍 Navigating to ZenHR login...");
+  await page.goto("https://app.zenhr.com/en/users/sign_in", {
+    waitUntil: "domcontentloaded",
+  });
+
+  await page
+    .getByRole("textbox", { name: "Email" })
+    .fill("h.abdulmanan@rewaatech.com");
+  await page
+    .getByRole("textbox", { name: "Password" })
+    .fill("Iamstudentofpucit12;");
+  await page.getByRole("button", { name: "Login" }).click();
+
+  await page
+    .getByRole("button", { name: "Clock-In" })
+    .waitFor({ timeout: 30000 });
+  await page.waitForTimeout(15000);
+  await page.getByRole("button", { name: "Clock-In" }).click();
+  await page
+    .getByRole("button", { name: "Proceed" })
+    .waitFor({ timeout: 30000 });
+  await page.getByRole("button", { name: "Proceed" }).click();
+
+  console.log("✅ Check-in completed!");
+  await browser.close();
+
+  return "Check-in completed!";
+}
+
+async function checkOut() {
+  const browser = await chromium.launchChromium({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  console.log("🌍 Navigating to ZenHR login...");
+  await page.goto("https://app.zenhr.com/en/users/sign_in", {
+    waitUntil: "domcontentloaded",
+  });
+
+  await page
+    .getByRole("textbox", { name: "Email" })
+    .fill("h.abdulmanan@rewaatech.com");
+  await page
+    .getByRole("textbox", { name: "Password" })
+    .fill("Iamstudentofpucit12;");
+  await page.getByRole("button", { name: "Login" }).click();
+
+  await page
+    .getByRole("button", { name: "Clock-In" })
+    .waitFor({ timeout: 30000 });
+  await page.waitForTimeout(15000);
+  await page.getByRole("button", { name: "Clock-Out" }).click();
+  await page
+    .getByRole("button", { name: "Proceed" })
+    .waitFor({ timeout: 30000 });
+  await page.getByRole("button", { name: "Proceed" }).click();
+
+  console.log("✅ Check-Out completed!");
+  await browser.close();
+
+  return "Check-Out completed!";
+}
 
 exports.handler = async (event) => {
-  return new Promise((resolve, reject) => {
-    let script = event.type === "check-in" ? "check-in.js" : "check-out.js";
-    exec(`node ${script}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error: ${stderr}`);
-        reject(error);
-      } else {
-        console.log(`Output: ${stdout}`);
-        resolve(stdout);
-      }
-    });
-  });
-}
-(async () => {
-    try {
-      console.log("🔹 Running Check-In...");
-      await exports.handler({ type: "check-in" });
-      console.log("✅ Check-In Completed!");
-    } catch (error) {
-      console.error("❌ Error:", error);
+  try {
+    if (event.type === "check-in") {
+      return await checkIn();
+    } else if (event.type === "check-out") {
+      return await checkOut();
+    } else {
+      throw new Error("Invalid event type");
     }
-  })();
+  } catch (error) {
+    console.error(error);
+    return { error: error.message };
+  }
+};
