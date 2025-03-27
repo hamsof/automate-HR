@@ -29,14 +29,18 @@ async function checkIn() {
     waitUntil: "domcontentloaded",
   });
 
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   await page.waitForSelector("#user_login");
   await page.type("#user_login", "h.abdulmanan@rewaatech.com");
   await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+
+  await delay(2000);
   await page.click('button[type="submit"]');
 
   await page.waitForSelector('button[name="action_type"]', { timeout: 30000 });
   const buttons = await page.$$('button[name="action_type"]');
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  
   console.log("⏳ Waiting for 5 seconds...");
   await delay(10000);
   console.log("✅ Continuing...");
@@ -72,13 +76,20 @@ async function checkOut() {
   });
 
   await page.waitForSelector("#user_login");
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
   await page.type("#user_login", "h.abdulmanan@rewaatech.com");
   await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+
+  delay(2000);
   await page.click('button[type="submit"]');
 
   await page.waitForSelector('button[name="action_type"]', { timeout: 30000 });
   const buttons = await page.$$('button[name="action_type"]');
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
   console.log("⏳ Waiting for 5 seconds...");
   await delay(10000);
   console.log("✅ Continuing...");
