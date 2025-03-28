@@ -31,21 +31,22 @@ async function checkIn() {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  console.log("login page");
   await page.waitForSelector("#user_login");
   await page.type("#user_login", "h.abdulmanan@rewaatech.com");
   await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
 
+  //adding delays to make sure its not bot! :)
   await delay(2000);
   await page.click('button[type="submit"]');
 
+  console.log("check in page");
   await page.waitForSelector('button[name="action_type"]', { timeout: 30000 });
   const buttons = await page.$$('button[name="action_type"]');
-  
-  console.log("⏳ Waiting for 5 seconds...");
   await delay(10000);
-  console.log("✅ Continuing...");
   await buttons[0].click();
 
+  console.log("proceed pop up");
   await delay(3000);
   await page.waitForSelector('button[name="commit"]', { timeout: 30000 });
   const buttonProceed = await page.$$('button[name="commit"]');
@@ -90,9 +91,7 @@ async function checkOut() {
   const buttons = await page.$$('button[name="action_type"]');
 
 
-  console.log("⏳ Waiting for 5 seconds...");
   await delay(10000);
-  console.log("✅ Continuing...");
   await buttons[1].click();
 
   await delay(3000);
