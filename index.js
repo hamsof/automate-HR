@@ -13,13 +13,15 @@ const chromium = require("@sparticuz/chromium-min");
 //     args: ["--no-sandbox", "--disable-setuid-sandbox"],
 //   });
 
+// add chromium-v122.0.0-pack.tar to s3 bucket with public access
+// private object will need aws-sdk to download and use which can increase the limit of lambda function
+const S3_CHROMIUM_URL = process.env.S3_CHROMIUM_URL;
+
 async function checkIn() {
   const browser = await puppeteer.launch({
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath(
-      "https://zen-hr.s3.us-east-1.amazonaws.com/chromium-v122.0.0-pack.tar"
-    ),
+    executablePath: await chromium.executablePath(S3_CHROMIUM_URL),
     headless: chromium.headless,
   });
   const page = await browser.newPage();
