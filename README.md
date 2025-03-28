@@ -1,3 +1,5 @@
+This tool is used to automate the process of marking attendance in Ze* H*. It uses puppeteer to automate the process of logging in and marking attendance.
+
 ## Setup
 1. Create a lambda function in AWS console. Set the timeout to 3 minutes and increase the memory to 512MB
 2. Create a zip of index.js and node_modules.
