@@ -16,6 +16,8 @@ const chromium = require("@sparticuz/chromium-min");
 // add chromium-v122.0.0-pack.tar to s3 bucket with public access
 // private object will need aws-sdk to download and use which can increase the limit of lambda function
 const S3_CHROMIUM_URL = process.env.S3_CHROMIUM_URL;
+const email = process.env.EMAIL;
+const password = process.env.PASSWORD;
 
 async function checkIn() {
   const browser = await puppeteer.launch({
@@ -35,8 +37,8 @@ async function checkIn() {
 
   console.log("login page");
   await page.waitForSelector("#user_login");
-  await page.type("#user_login", "h.abdulmanan@rewaatech.com");
-  await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+  await page.type("#user_login", email);
+  await page.type('input[name="user[password]"]', password);
 
   //adding delays to make sure its not bot! :)
   await delay(2000);
@@ -83,8 +85,8 @@ async function checkOut() {
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
-  await page.type("#user_login", "h.abdulmanan@rewaatech.com");
-  await page.type('input[name="user[password]"]', "Iamstudentofpucit12;");
+  await page.type("#user_login", email);
+  await page.type('input[name="user[password]"]', password);
 
   delay(2000);
   await page.click('button[type="submit"]');
